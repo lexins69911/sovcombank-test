@@ -1,3 +1,4 @@
 # Test project for sovcombank
 
-start project:  sh build.sh
+To start project:
+ sh build.sh
