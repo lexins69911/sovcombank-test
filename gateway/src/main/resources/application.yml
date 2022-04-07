@@ -1,0 +1,28 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: getaway
+  cloud:
+    gateway:
+      routes:
+        -
+          id: email
+          uri: lb://EMAIL-SENDER
+          predicates:
+            - Path=/api/sender/email/**
+        -
+          id: push
+          uri: lb://PUSH-SENDER
+          predicates:
+            - Path=/api/sender/push/**
+        -
+          id: sms
+          uri: lb://SMS-SENDER
+          predicates:
+            - Path=/api/sender/sms/**
+      discovery:
+        locator:
+          enabled: true
+          lowerCaseServiceId: true

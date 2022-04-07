@@ -1,0 +1,67 @@
+version: '3.7'
+services:
+  server-discovery:
+    build:
+      context: registry
+    ports:
+      - 8761:8761
+    image: server-discovery
+    networks:
+      - shared-net
+    environment:
+        - eureka.client.serviceUrl.defaultZone=http://server-discovery:8761/eureka
+  email-service:
+    build: 
+      context: email-sender
+    image: email-service
+    ports:
+      - 9000:9000
+    depends_on:
+      - server-discovery
+    networks:
+      - shared-net
+    environment:
+        - eureka.client.serviceUrl.defaultZone=http://server-discovery:8761/eureka
+  sms-service:
+    build: 
+      context: sms-sender
+    image: sms-service
+    ports:
+      - 9001:9001
+    depends_on:
+      - server-discovery
+    networks:
+      - shared-net
+    environment:
+        - eureka.client.serviceUrl.defaultZone=http://server-discovery:8761/eureka
+  push-service:
+    build: 
+      context: push-sender
+    image: push-service
+    ports:
+      - 9002:9002
+    depends_on:
+      - server-discovery
+    networks:
+      - shared-net
+    environment:
+        - eureka.client.serviceUrl.defaultZone=http://server-discovery:8761/eureka
+  api-gateway:
+    build: 
+      context: gateway
+    ports:
+      - 8080:8080
+    image: api-gateway
+    depends_on:
+      - email-service
+      - push-service
+      - sms-service
+    networks:
+      - shared-net
+    environment:
+        - eureka.client.serviceUrl.defaultZone=http://server-discovery:8761/eureka
+
+networks:
+  shared-net:
+    name: shared-net
+    driver: bridge
