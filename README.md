@@ -1,4 +1,4 @@
 # Test project for sovcombank
 
-To start project: write
- sh build.sh
+Чтобы запустить проект, пропишите sh build.sh
+
